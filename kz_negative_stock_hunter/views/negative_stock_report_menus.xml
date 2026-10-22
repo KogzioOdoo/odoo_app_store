@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <menuitem id="negative_stock_report_menu"
+              name="Negative Stock"
+              parent="stock.menu_warehouse_report"
+              action="negative_stock_report_action"
+              groups="stock.group_stock_user"/>
+</odoo>

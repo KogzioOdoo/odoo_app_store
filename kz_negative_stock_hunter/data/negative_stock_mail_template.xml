@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="email_template_negative_stock_alert" model="mail.template">
+        <field name="name">Negative Stock Alert</field>
+        <field name="model_id" ref="model_negative_stock_alert"/>
+        <field name="subject">Negative Stock Detected: {{ object.product_id.display_name }}</field>
+        <field name="email_from">{{ user.email_formatted or '' }}</field>
+        <field name="body_html" type="html">
+            <div>
+                <p>Hello,</p>
+                <p>A new negative stock issue has been detected.</p>
+                <ul>
+                    <li>
+                        <strong>Product:</strong>
+                        <t t-out="object.product_id.display_name"/>
+                    </li>
+                    <li>
+                        <strong>Location:</strong>
+                        <t t-out="object.location_id.display_name"/>
+                    </li>
+                    <li>
+                        <strong>Company:</strong>
+                        <t t-out="object.company_id.display_name"/>
+                    </li>
+                    <li>
+                        <strong>On Hand Quantity:</strong>
+                        <t t-out="object.quantity"/>
+                    </li>
+                </ul>
+                <p>Please review the stock movements and correct the issue</p>
+                <p>Negative Stock Hunter</p>
+            </div>
+        </field>
+    </record>
+</odoo>

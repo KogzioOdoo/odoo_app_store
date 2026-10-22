@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_negative_stock" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.negative.stock</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="stock.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//app[@name='stock']" position="inside">
+                <block title="Negative Stock Alerts"
+                       name="negative_stock_alert_settings">
+
+                    <setting string="Enable Email Alerts"
+                             help="Enable email notifications when negative stock is detected.">
+                        <field name="enable_email_alerts"/>
+                    </setting>
+
+                    <setting string="Alert Email Recipients"
+                             help="Enter one or more email addresses separated by commas."
+                             invisible="not enable_email_alerts">
+                        <field name="alert_recipient_email"
+                               placeholder="admin@.com, manager@.com"/>
+                    </setting>
+
+                </block>
+            </xpath>
+        </field>
+    </record>
+</odoo>
