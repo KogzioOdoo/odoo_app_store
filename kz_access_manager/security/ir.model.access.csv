@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+am_profile_admin,Access profiles,model_am_profile,base.group_system,1,1,1,1
+am_model_rule_admin,Model restrictions,model_am_model_rule,base.group_system,1,1,1,1
+am_field_rule_admin,Field restrictions,model_am_field_rule,base.group_system,1,1,1,1
+am_domain_rule_admin,Record domains,model_am_domain_rule,base.group_system,1,1,1,1
+am_node_rule_admin,View node restrictions,model_am_node_rule,base.group_system,1,1,1,1
+am_preview_admin,Effective access preview,model_am_preview,base.group_system,1,1,1,1
+am_view_type_admin,View types,model_am_view_type,base.group_system,1,0,0,0

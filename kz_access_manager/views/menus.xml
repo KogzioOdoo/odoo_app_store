@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_root" name="Access Manager" sequence="25" groups="base.group_system" web_icon="kz_access_manager,static/description/icon.png"/>
+    <menuitem id="menu_profiles" name="Access Profiles" parent="menu_root" action="profile_action" sequence="10" groups="base.group_system"/>
+    <menuitem id="menu_preview" name="Preview &amp; Discovery" parent="menu_root" action="preview_action" sequence="20" groups="base.group_system"/>
+</odoo>

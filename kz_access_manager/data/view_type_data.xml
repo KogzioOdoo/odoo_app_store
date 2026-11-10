@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="view_type_list" model="am.view.type">
+        <field name="name">List</field>
+        <field name="code">list</field>
+        <field name="sequence">10</field>
+    </record>
+    <record id="view_type_form" model="am.view.type">
+        <field name="name">Form</field>
+        <field name="code">form</field>
+        <field name="sequence">20</field>
+    </record>
+    <record id="view_type_kanban" model="am.view.type">
+        <field name="name">Kanban</field>
+        <field name="code">kanban</field>
+        <field name="sequence">30</field>
+    </record>
+    <record id="view_type_calendar" model="am.view.type">
+        <field name="name">Calendar</field>
+        <field name="code">calendar</field>
+        <field name="sequence">40</field>
+    </record>
+    <record id="view_type_pivot" model="am.view.type">
+        <field name="name">Pivot</field>
+        <field name="code">pivot</field>
+        <field name="sequence">50</field>
+    </record>
+    <record id="view_type_graph" model="am.view.type">
+        <field name="name">Graph</field>
+        <field name="code">graph</field>
+        <field name="sequence">60</field>
+    </record>
+    <record id="view_type_activity" model="am.view.type">
+        <field name="name">Activity</field>
+        <field name="code">activity</field>
+        <field name="sequence">70</field>
+    </record>
+    <record id="view_type_gantt" model="am.view.type">
+        <field name="name">Gantt</field>
+        <field name="code">gantt</field>
+        <field name="sequence">80</field>
+    </record>
+    <record id="view_type_cohort" model="am.view.type">
+        <field name="name">Cohort</field>
+        <field name="code">cohort</field>
+        <field name="sequence">90</field>
+    </record>
+    <record id="view_type_map" model="am.view.type">
+        <field name="name">Map</field>
+        <field name="code">map</field>
+        <field name="sequence">100</field>
+    </record>
+    <record id="view_type_hierarchy" model="am.view.type">
+        <field name="name">Hierarchy</field>
+        <field name="code">hierarchy</field>
+        <field name="sequence">110</field>
+    </record>
+</odoo>

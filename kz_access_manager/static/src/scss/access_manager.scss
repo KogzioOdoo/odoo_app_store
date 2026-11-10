@@ -1,0 +1,118 @@
+.o_am_profiles {
+    --am-accent: #5268a3;
+    --am-accent-dark: #405487;
+    --am-accent-soft: #eef1fb;
+    --am-border: #e2e7f0;
+    --am-text: #26344d;
+    --am-muted: #718096;
+
+    .o_kanban_record:not(.o_kanban_ghost) {
+        position: relative;
+        padding: 22px;
+        background: #ffffff;
+        border: 1px solid var(--am-border);
+        border-top: 3px solid var(--am-accent);
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(40, 55, 90, 0.05);
+        transition:
+            transform 0.2s ease,
+            box-shadow 0.2s ease,
+            border-color 0.2s ease;
+        &:hover {
+            transform: translateY(-2px);
+            border-color: #d5ddef;
+            box-shadow:
+                0 8px 22px rgba(40, 55, 90, 0.10);
+        }
+    }
+    /* Shield Icon */
+    .am-shield {
+        display: grid;
+        place-items: center;
+        flex-shrink: 0;
+        width: 42px;
+        height: 42px;
+        color: var(--am-accent);
+        background: var(--am-accent-soft);
+        border: 1px solid #dce3f5;
+        border-radius: 12px;
+        font-size: 24px;
+        line-height: 1;
+         transition:
+            background 0.2s ease,
+            color 0.2s ease;
+    }
+
+    .o_kanban_record:hover .am-shield {
+        background: var(--am-accent);
+        color: #ffffff;
+    }
+}
+
+.o_am_profile_form {
+
+    .am-info {
+        padding: 14px 16px;
+        color: #435477;
+        background: #f5f7fc;
+        border: 1px solid #e1e7f4;
+        border-left: 4px solid #5268a3;
+        border-radius: 8px;
+        font-size: 13px;
+        line-height: 1.65;
+    }
+}
+
+.am-code {
+    min-height: 260px;
+    padding: 14px;
+    color: #26344d;
+    background: #f8f9fc;
+    border: 1px solid #e2e7f0;
+    border-radius: 8px;
+    font-family:
+        ui-monospace,
+        SFMono-Regular,
+        Consolas,
+        "Liberation Mono",
+        monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    tab-size: 4;
+    &:focus {
+        border-color: #5268a3;
+        box-shadow:
+            0 0 0 2px rgba(82, 104, 163, 0.12);
+        outline: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .o_am_profiles {
+        .o_kanban_record:not(.o_kanban_ghost) {
+            padding: 16px;
+            border-radius: 10px;
+        }
+        .am-shield {
+            width: 38px;
+            height: 38px;
+            font-size: 21px;
+        }
+    }
+    .am-code {
+        min-height: 200px;
+        font-size: 12px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .o_am_profiles {
+        .o_kanban_record:not(.o_kanban_ghost),
+        .am-shield {
+            transition: none;
+        }
+        .o_kanban_record:hover {
+            transform: none;
+        }
+    }
+}

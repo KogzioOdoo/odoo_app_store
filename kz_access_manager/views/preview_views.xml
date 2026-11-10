@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="preview_form" model="ir.ui.view">
+        <field name="name">am.preview.form</field>
+        <field name="model">am.preview</field>
+        <field name="arch" type="xml">
+            <form string="Preview &amp; Discovery">
+                <group>
+                    <field name="user_id" options="{'no_create': True}"/>
+                    <field name="company_id" options="{'no_create': True}"/>
+                    <field name="model_id" options="{'no_create': True}"/>
+                </group>
+                <notebook>
+                    <page string="Effective Restrictions" name="effective">
+                        <field name="result" nolabel="1" class="am-code"/>
+                    </page>
+                    <page string="View Elements" name="discovery">
+                        <p class="text-muted">View type | element | technical name | label</p>
+                        <field name="elements" nolabel="1" class="am-code"/>
+                    </page>
+                </notebook>
+                <footer>
+                    <button name="action_preview" type="object" string="Preview Access" class="btn-primary"/>
+                    <button name="action_discover" type="object" string="Discover View Elements"/>
+                    <button string="Close" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record id="preview_action" model="ir.actions.act_window">
+        <field name="name">Preview &amp; Discovery</field>
+        <field name="res_model">am.preview</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

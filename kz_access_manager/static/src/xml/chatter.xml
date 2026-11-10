@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="kz_access_manager.ChatterControls" t-inherit="mail.Chatter" t-inherit-mode="extension">
+        <xpath expr="//button[hasclass('o-mail-Chatter-sendMessage')]" position="attributes">
+            <attribute name="t-if" add="!this.amFlags.hide_send_message" separator=" and "/>
+        </xpath>
+        <xpath expr="//button[hasclass('o-mail-Chatter-logNote')]" position="attributes">
+            <attribute name="t-if" add="!this.amFlags.hide_log_note" separator=" and "/>
+        </xpath>
+        <xpath expr="//button[hasclass('o-mail-Chatter-activity')]" position="attributes">
+            <attribute name="t-if" add="!this.amFlags.hide_activity" separator=" and "/>
+        </xpath>
+    </t>
+</templates>

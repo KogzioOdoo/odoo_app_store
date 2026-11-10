@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="profile_search" model="ir.ui.view">
+        <field name="name">am.profile.search</field>
+        <field name="model">am.profile</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="user_ids"/>
+                <field name="group_ids"/>
+                <field name="company_ids"/>
+                <filter name="active" string="Active" domain="[('active', '=', True)]"/>
+                <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
+                <separator/>
+                <filter name="readonly" string="Read-only Users" domain="[('readonly', '=', True)]"/>
+                <filter name="login" string="Login Disabled" domain="[('disable_login', '=', True)]"/>
+            </search>
+        </field>
+    </record>
+    <record id="profile_list" model="ir.ui.view">
+        <field name="name">am.profile.list</field>
+        <field name="model">am.profile</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="not active">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="user_ids" widget="many2many_tags"/>
+                <field name="group_ids" widget="many2many_tags" optional="hide"/>
+                <field name="company_ids" widget="many2many_tags"/>
+                <field name="rule_count" string="Rules"/>
+                <field name="readonly"/>
+                <field name="disable_login" optional="hide"/>
+                <field name="active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+    <record id="profile_kanban" model="ir.ui.view">
+        <field name="name">am.profile.kanban</field>
+        <field name="model">am.profile</field>
+        <field name="arch" type="xml">
+            <kanban class="o_am_profiles" quick_create="false">
+                <field name="active"/>
+                <field name="readonly"/>
+                <field name="disable_login"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="am-card-heading d-flex align-items-center gap-3 mb-3">
+                            <img class="am-shield" src="/kz_access_manager/static/description/icon.png" alt="Access profile"/>
+                            <div class="flex-grow-1">
+                                <field name="name" class="fw-bold fs-5"/>
+                            </div>
+                            <span t-if="record.active.raw_value" class="badge text-bg-success">Active</span>
+                            <span t-else="" class="badge text-bg-secondary">Archived</span>
+                        </div>
+                        <div class="d-flex gap-4 mb-3 text-muted">
+                            <span><field name="user_count" class="fw-bold text-body"/> users</span>
+                            <span><field name="rule_count" class="fw-bold text-body"/> rules</span>
+                        </div>
+                        <field name="company_ids" widget="many2many_tags"/>
+                        <div class="d-flex gap-2 mt-2">
+                            <span t-if="record.readonly.raw_value" class="badge text-bg-light">Read-only</span>
+                            <span t-if="record.disable_login.raw_value" class="badge text-bg-danger">Login disabled</span>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+    <record id="profile_form" model="ir.ui.view">
+        <field name="name">am.profile.form</field>
+        <field name="model">am.profile</field>
+        <field name="arch" type="xml">
+            <form string="Access Profile" class="o_am_profile_form">
+                <header>
+                    <button name="action_preview" type="object" string="Preview Effective Access" class="btn-primary"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <field name="active" invisible="1"/>
+                    <div class="oe_title"><label for="name"/><h1><field name="name" placeholder="e.g. Sales · Read-only"/></h1></div>
+                    <div class="alert alert-info am-info" role="alert">
+                        Choose users or groups, then add restrictions below. Checked options remove access.
+                        Profiles combine; existing Odoo permissions still apply. Disable login does not apply to administrators.
+                    </div>
+                    <group>
+                        <group string="Who">
+                            <field name="user_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                            <field name="group_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                        </group>
+                        <group string="Where">
+                            <field name="company_ids" widget="many2many_tags" options="{'no_create': True}" placeholder="All companies"/>
+                            <field name="sequence"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Global Controls" name="global">
+                            <group>
+                                <group string="Account &amp; Data">
+                                    <field name="readonly"/>
+                                    <field name="disable_login"/>
+                                    <field name="hide_debug"/>
+                                    <field name="no_import"/>
+                                    <field name="no_export"/>
+                                    <field name="no_duplicate"/>
+                                    <field name="no_archive"/>
+                                </group>
+                                <group string="Workspace">
+                                    <field name="hide_chatter"/>
+                                    <field name="hide_send_message"/>
+                                    <field name="hide_log_note"/>
+                                    <field name="hide_activity"/>
+                                    <field name="hide_search_panel"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Menus &amp; Actions" name="menus">
+                            <group>
+                                <field name="menu_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                                <field name="server_action_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                                <field name="report_action_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                                <field name="window_action_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                            </group>
+                            <p class="text-muted">Hiding a menu also hides its descendants. Protect the underlying data with Model Rules or Record Domains.</p>
+                        </page>
+                        <page string="Model Rules" name="models">
+                            <field name="model_rule_ids">
+                                <list>
+                                    <field name="model_id" options="{'no_create': True}"/>
+                                    <field name="deny_read"/>
+                                    <field name="deny_create"/>
+                                    <field name="deny_write"/>
+                                    <field name="deny_unlink"/>
+                                    <field name="no_import" optional="show"/>
+                                    <field name="no_export" optional="show"/>
+                                    <field name="hidden_view_type_ids" widget="many2many_tags" optional="hide"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Field Rules" name="fields">
+                            <field name="field_rule_ids">
+                                <list>
+                                    <field name="model_id" options="{'no_create': True}"/>
+                                    <field name="field_ids" widget="many2many_tags"/>
+                                    <field name="condition" optional="show"/>
+                                    <field name="invisible"/>
+                                    <field name="readonly"/>
+                                    <field name="required"/>
+                                    <field name="no_export"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Record Domains" name="domains">
+                            <field name="domain_rule_ids">
+                                <list>
+                                    <field name="model_id" options="{'no_create': True}"/>
+                                    <field name="domain"/>
+                                    <field name="for_read"/>
+                                    <field name="for_create"/>
+                                    <field name="for_write"/>
+                                    <field name="for_unlink"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Buttons, Tabs &amp; Filters" name="nodes">
+                            <field name="node_rule_ids">
+                                <list editable="bottom">
+                                    <field name="model_id" options="{'no_create': True}"/>
+                                    <field name="kind"/>
+                                    <field name="node_name"/>
+                                    <field name="label"/>
+                                    <field name="condition" optional="show"/>
+                                </list>
+                            </field>
+                            <p class="text-muted">Use Preview &amp; Discovery to find exact technical names in the installed views.</p>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="notes" placeholder="Explain the purpose of this profile and any exceptions."/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="profile_action" model="ir.actions.act_window">
+        <field name="name">Access Profiles</field>
+        <field name="res_model">am.profile</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create your first access profile</p>
+            <p>One place to control what your team can see and do. Assign users or groups, choose companies, and add restrictions.</p>
+        </field>
+    </record>
+</odoo>
