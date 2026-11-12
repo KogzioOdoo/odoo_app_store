@@ -31,7 +31,6 @@ Website: https://www.kogzio.com
         'views/preview_views.xml',
         'views/menus.xml',
     ],
-    'demo':['demo/demo.xml'],
     'assets': {
         'web.assets_backend': [
             'kz_access_manager/static/src/js/access_controls.js',
