@@ -4,7 +4,7 @@
 #  License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl-3.0).
 {
     'name': 'Access Manager',
-    'version': '19.0.1.1.0',
+    'version': '19.0.1.0.1',
     'category': 'Extra Tools',
     'summary': 'User and company access profiles for models, fields, records, and views',
     'description': """
