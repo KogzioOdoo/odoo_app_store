@@ -5,7 +5,7 @@
 
 {
     'name': 'Activity Management',
-    'version': '19.0.1.1.1',
+    'version': '19.0.1.1.2',
     'category' : 'Productivity',
     'website': 'https://www.kogzio.com',
     'summary': 'Team activities, follow-ups, shared work, timers and reminders',
