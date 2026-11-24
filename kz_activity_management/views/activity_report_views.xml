@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <record id="mail_activity_view_pivot" model="ir.ui.view">
+        <field name="name">mail.activity.pivot.kz</field>
+        <field name="model">mail.activity</field>
+        <field name="arch" type="xml">
+            <pivot string="Activity Analysis">
+                <field name="user_id" type="row"/>
+                <field name="activity_type_id" type="col"/>
+                <field name="time_spent" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+    <record id="mail_activity_view_graph" model="ir.ui.view">
+        <field name="name">mail.activity.graph.kz</field>
+        <field name="model">mail.activity</field>
+        <field name="arch" type="xml">
+            <graph string="Activity Analysis" type="bar">
+                <field name="user_id"/>
+                <field name="activity_type_id"/>
+            </graph>
+        </field>
+    </record>
+    <record id="mail_activity_action_report" model="ir.actions.act_window">
+        <field name="name">Activity Analysis</field>
+        <field name="res_model">mail.activity</field>
+        <field name="view_mode">graph,pivot</field>
+        <field name="search_view_id" ref="mail_activity_view_search"/>
+        <field name="context">{'active_test': False}</field>
+    </record>
+    <record id="activity_report_graph_binding" model="ir.actions.act_window.view">
+        <field name="sequence" eval="1"/>
+        <field name="view_mode">graph</field>
+        <field name="view_id" ref="mail_activity_view_graph"/>
+        <field name="act_window_id" ref="mail_activity_action_report"/>
+    </record>
+    <record id="activity_report_pivot_binding" model="ir.actions.act_window.view">
+        <field name="sequence" eval="2"/>
+        <field name="view_mode">pivot</field>
+        <field name="view_id" ref="mail_activity_view_pivot"/>
+        <field name="act_window_id" ref="mail_activity_action_report"/>
+    </record>
+</odoo>

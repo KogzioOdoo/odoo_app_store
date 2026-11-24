@@ -1,0 +1,34 @@
+<templates xml:space="preserve">
+    <t t-name="kz_activity_management.ActivityBell">
+        <div t-if="state.allowed" class="d-flex align-items-center">
+            <button class="o_bell btn border-0 position-relative" title="Due work and pending reminders" aria-label="Due work and pending reminders" t-on-click="onClick">
+                <i class="fa fa-bell fa-lg" aria-hidden="true"/>
+                <span t-if="state.count" class="badge rounded-pill text-bg-danger" t-esc="state.count"/>
+            </button>
+            <button t-if="state.error" class="btn btn-link text-warning" title="Refresh failed. Retry." aria-label="Retry activity refresh" t-on-click="loadCount">
+                <i class="fa fa-refresh" aria-hidden="true"/>
+            </button>
+            <Dropdown t-if="state.timers.length" position="'bottom-end'">
+                <button title="Your running timers" aria-label="Your running timers" class="btn text-success">
+                    <i class="fa fa-play-circle me-1" aria-hidden="true"/>
+                    <t t-esc="state.timers.length"/>
+                </button>
+                <t t-set-slot="content">
+                    <div class="p-3" style="min-width:280px;max-width:90vw">
+                        <strong>Running Timers</strong>
+                        <p class="small text-muted">You can run one session per activity. Completing or cancelling stops all sessions on that activity.</p>
+                        <t t-foreach="state.timers" t-as="timer" t-key="timer.id">
+                            <div class="border-top py-2">
+                                <button class="btn btn-link p-0 text-start" t-on-click="() =&gt; this.openTimer(timer)" t-esc="timer.name"/>
+                                <div class="d-flex justify-content-between align-items-center gap-3">
+                                    <span class="font-monospace" t-esc="elapsed(timer)"/>
+                                    <button class="btn btn-sm btn-outline-danger" t-att-disabled="state.pending" t-on-click="() =&gt; this.stopTimer(timer)">Stop</button>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </t>
+            </Dropdown>
+        </div>
+    </t>
+</templates>

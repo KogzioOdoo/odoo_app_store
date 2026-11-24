@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <record id="activity_cancel_wizard_view_form" model="ir.ui.view">
+        <field name="name">activity.cancel.wizard.form</field>
+        <field name="model">activity.cancel.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Cancel Activity">
+                <group>
+                    <field name="activity_id" invisible="1"/>
+                    <field name="reason" placeholder="Why is this activity cancelled?"/>
+                </group>
+                <footer>
+                    <button name="action_confirm" string="Confirm" type="object" class="btn-primary" data-hotkey="q"/>
+                    <button string="Discard" class="btn-secondary" special="cancel" data-hotkey="x"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

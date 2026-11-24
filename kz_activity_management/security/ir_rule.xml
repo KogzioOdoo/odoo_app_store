@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <record id="activity_tag_company_rule" model="ir.rule">
+        <field name="name">Activity Tag: multi-company</field>
+        <field name="model_id" ref="model_activity_tag"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="activity_company_rule" model="ir.rule">
+        <field name="name">Activity: allowed companies</field>
+        <field name="model_id" ref="mail.model_mail_activity"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="timer_company_rule" model="ir.rule">
+        <field name="name">Timer: allowed companies</field>
+        <field name="model_id" ref="model_activity_timer"/>
+        <field name="domain_force">['|', ('activity_id.company_id', '=', False), ('activity_id.company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="timer_employee_rule" model="ir.rule">
+        <field name="name">Timer: own and shared activities</field>
+        <field name="model_id" ref="model_activity_timer"/>
+        <field name="domain_force">['|', ('activity_id.user_id', '=', user.id), ('activity_id.assigned_user_ids', 'in', [user.id])]</field>
+        <field name="groups" eval="[Command.link(ref('group_activity_employee'))]"/>
+    </record>
+    <record id="timer_supervisor_rule" model="ir.rule">
+        <field name="name">Timer: own, shared and team activities</field>
+        <field name="model_id" ref="model_activity_timer"/>
+        <field name="domain_force">['|', '|', ('activity_id.user_id', '=', user.id), ('activity_id.assigned_user_ids', 'in', [user.id]), ('activity_id.supervisor_id', '=', user.id)]</field>
+        <field name="groups" eval="[Command.link(ref('group_activity_supervisor'))]"/>
+    </record>
+    <record id="timer_manager_rule" model="ir.rule">
+        <field name="name">Timer: manager activities</field>
+        <field name="model_id" ref="model_activity_timer"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[Command.link(ref('group_activity_manager'))]"/>
+    </record>
+    <record id="history_company_rule" model="ir.rule">
+        <field name="name">History: allowed companies</field>
+        <field name="model_id" ref="model_activity_history"/>
+        <field name="domain_force">['|', ('activity_id.company_id', '=', False), ('activity_id.company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="history_employee_rule" model="ir.rule">
+        <field name="name">History: own and shared activities</field>
+        <field name="model_id" ref="model_activity_history"/>
+        <field name="domain_force">['|', ('activity_id.user_id', '=', user.id), ('activity_id.assigned_user_ids', 'in', [user.id])]</field>
+        <field name="groups" eval="[Command.link(ref('group_activity_employee'))]"/>
+    </record>
+    <record id="history_supervisor_rule" model="ir.rule">
+        <field name="name">History: own, shared and team activities</field>
+        <field name="model_id" ref="model_activity_history"/>
+        <field name="domain_force">['|', '|', ('activity_id.user_id', '=', user.id), ('activity_id.assigned_user_ids', 'in', [user.id]), ('activity_id.supervisor_id', '=', user.id)]</field>
+        <field name="groups" eval="[Command.link(ref('group_activity_supervisor'))]"/>
+    </record>
+    <record id="history_manager_rule" model="ir.rule">
+        <field name="name">History: manager activities</field>
+        <field name="model_id" ref="model_activity_history"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[Command.link(ref('group_activity_manager'))]"/>
+    </record>
+</odoo>

@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <record id="mail_activity_schedule_view_form_inherit_kz" model="ir.ui.view">
+        <field name="name">mail.activity.schedule.form.inherit.kz</field>
+        <field name="model">mail.activity.schedule</field>
+        <field name="inherit_id" ref="mail.mail_activity_schedule_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='note']" position="after">
+                <group string="Additional Activity Details" groups="kz_activity_management.group_activity_employee" colspan="2">
+                    <group>
+                        <field name="priority" widget="priority"/>
+                        <field name="tag_ids" widget="many2many_tags" domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]"/>
+                        <field name="estimated_hours" widget="float_time"/>
+                        <field name="supervisor_id" widget="many2one_avatar_user"/>
+                    </group>
+                    <group>
+                        <field name="assignment_type"/>
+                        <field name="assigned_user_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                        <field name="alarm_datetime"/>
+                    </group>
+                </group>
+                <group string="Recurrence" groups="kz_activity_management.group_activity_employee" colspan="2">
+                    <field name="is_recurring"/>
+                    <field name="recurrence_interval" invisible="not is_recurring"/>
+                    <field name="recurrence_unit" invisible="not is_recurring" required="is_recurring"/>
+                    <field name="recurrence_end_date" invisible="not is_recurring"/>
+                </group>
+            </xpath>
+            <xpath expr="//button[@name='action_schedule_activities_done']" position="before">
+                <field name="management_can_complete" invisible="1"/>
+            </xpath>
+            <xpath expr="//button[@name='action_schedule_activities_done']" position="attributes">
+                <attribute name="invisible">has_error or chaining_type == 'trigger' or not management_can_complete</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,304 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+
+    <record id="mail_activity_view_list" model="ir.ui.view">
+        <field name="name">mail.activity.list</field>
+        <field name="model">mail.activity</field>
+        <field name="arch" type="xml">
+            <list string="Activity" create="0" decoration-danger="management_state == 'overdue'" decoration-warning="management_state == 'today'" decoration-muted="management_state in ('done', 'cancelled')">
+                <field name="res_name" string="Document"/>
+                <field name="activity_type_id"/>
+                <field name="summary"/>
+                <field name="user_id" widget="many2one_avatar_user"/>
+                <field name="supervisor_id" widget="many2one_avatar_user"/>
+                <field name="date_deadline"/>
+                <field name="priority" widget="priority"/>
+                <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                <field name="estimated_hours" widget="float_time" optional="hide"/>
+                <field name="remaining_hours" widget="float_time" optional="hide"/>
+                <field name="management_state" widget="badge" decoration-danger="management_state == 'overdue'" decoration-warning="management_state == 'today'" decoration-info="management_state == 'planned'" decoration-success="management_state == 'done'"/>
+                <field name="company_id" optional="hide" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="mail_activity_view_form" model="ir.ui.view">
+        <field name="name">mail.activity.form</field>
+        <field name="model">mail.activity</field>
+        <field name="priority">30</field>
+        <field name="arch" type="xml">
+            <form string="Activity" create="0">
+                <header>
+                    <field name="active" invisible="1"/>
+                    <field name="is_timer_running" invisible="1"/>
+                    <field name="res_id" invisible="1"/>
+                    <button name="action_feedback_wizard" type="object" string="Done" class="btn-primary" invisible="not active" help="Finish with feedback, or finish and create a follow-up."/>
+                    <button name="action_cancel_wizard" type="object" string="Cancel" invisible="not active" help="Cancel with a reason and retain history."/>
+                    <button name="action_reopen" type="object" string="Reopen" invisible="active" help="Return this activity to active work. Previous source messages remain."/>
+                    <button name="action_start_timer" type="object" string="Start Timer" invisible="is_timer_running or not active"/>
+                    <button name="action_stop_timer" type="object" string="Stop Timer" invisible="not is_timer_running"/>
+                    <field name="management_state" widget="statusbar" statusbar_visible="planned,today,overdue,done,cancelled"/>
+                    <field name="company_id" invisible="1"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_document" type="object" class="oe_stat_button" icon="fa-external-link" invisible="not res_model or not res_id">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Origin</span>
+                            </div>
+                        </button>
+                        <button name="action_share_whatsapp" type="object" class="oe_stat_button" icon="fa-whatsapp" help="Review a prefilled message in WhatsApp before sending.">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Share</span>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="summary"/>
+                        <h1>
+                            <field name="summary" placeholder="What needs to be done?" readonly="not active"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Activity">
+                            <field name="activity_type_id" readonly="not active"/>
+                            <field name="res_name" string="Document" readonly="1"/>
+                            <field name="res_model" string="Document Type" readonly="1" invisible="1"/>
+                            <field name="res_model_id" string="Document Type" readonly="1" options="{'no_open': True, 'no_create': True}"/>
+                            <field name="priority" widget="priority" readonly="not active"/>
+                            <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}" readonly="not active" domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]"/>
+                        </group>
+                        <group string="Responsibility and Deadline">
+                            <field name="user_id" widget="many2one_avatar_user" readonly="not active"/>
+                            <field name="supervisor_id" widget="many2one_avatar_user" readonly="not active"/>
+                            <field name="date_deadline" readonly="not active"/>
+                            <field name="company_id" groups="base.group_multi_company" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Completion" invisible="active or cancelled_date">
+                        <field name="date_done" readonly="1"/>
+                        <field name="feedback" readonly="1"/>
+                    </group>
+                    <group string="Cancellation" invisible="not cancelled_date">
+                        <field name="cancelled_date" readonly="1"/>
+                        <field name="cancel_reason" readonly="1"/>
+                    </group>
+                    <notebook>
+                        <page name="note" string="Note">
+                            <field name="note" readonly="not active" placeholder="Add context for the people assigned to this activity…"/>
+                        </page>
+                        <page name="assignment" string="Sharing and Reminders">
+                            <group>
+                                <group string="Assignment">
+                                    <field name="assignment_type" readonly="not active"/>
+                                    <field name="assigned_user_ids" widget="many2many_tags" readonly="not active" options="{'no_create': True}" placeholder="Select additional people…"/>
+                                </group>
+                                <group string="Reminder">
+                                    <field name="alarm_datetime" readonly="not active"/>
+                                    <field name="alarm_sent" readonly="1"/>
+                                    <button name="action_acknowledge_alarm" type="object" string="Acknowledge My Reminder" invisible="not alarm_datetime or not active or (user_id != uid and uid not in assigned_user_ids)"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page name="time_tracking" string="Time Tracking">
+                            <group>
+                                <field name="estimated_hours" widget="float_time" readonly="not active"/>
+                                <field name="time_spent" widget="float_time" readonly="1"/>
+                                <field name="remaining_hours" widget="float_time" readonly="1"/>
+                                <field name="legacy_time_spent" widget="float_time" readonly="1" invisible="not legacy_time_spent"/>
+                            </group>
+                            <field name="timer_ids" readonly="1">
+                                <list create="0" edit="0" delete="0">
+                                    <field name="user_id"/>
+                                    <field name="start_time"/>
+                                    <field name="stop_time"/>
+                                    <field name="duration" widget="float_time"/>
+                                    <field name="is_running"/>
+                                    <field name="description" optional="hide"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page name="recurrence" string="Recurrence">
+                            <group>
+                                <field name="is_recurring" readonly="not active"/>
+                                <field name="recurrence_interval" invisible="not is_recurring" readonly="not active"/>
+                                <field name="recurrence_unit" required="is_recurring" invisible="not is_recurring" readonly="not active"/>
+                                <field name="recurrence_end_date" invisible="not is_recurring" readonly="not active"/>
+                                <field name="recurrence_created" invisible="not is_recurring" readonly="1"/>
+                            </group>
+                            <p class="text-muted" invisible="not is_recurring">The daily job creates the next activity after completion. Cancellation does not generate another occurrence.</p>
+                        </page>
+                        <page name="automation" string="Automation">
+                            <group>
+                                <field name="due_notified" readonly="1"/>
+                                <field name="missed_notified" readonly="1"/>
+                                <field name="notification_error" readonly="1" invisible="not notification_error"/>
+                                <field name="recurrence_error" readonly="1" invisible="not recurrence_error"/>
+                                <button name="action_retry_notifications" type="object" string="Retry After Correction" invisible="not notification_error and not recurrence_error"/>
+                            </group>
+                            <p class="text-muted">Email flags indicate queueing, not delivery. An administrator can inspect Odoo’s outgoing mail queue. Correct an error before retrying.</p>
+                        </page>
+                        <page name="history" string="History">
+                            <field name="history_ids" readonly="1">
+                                <list create="0" edit="0" delete="0">
+                                    <field name="occurred_at"/>
+                                    <field name="event"/>
+                                    <field name="actor_id"/>
+                                    <field name="responsible_id"/>
+                                    <field name="details"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="mail_activity_view_search" model="ir.ui.view">
+        <field name="name">mail.activity.search</field>
+        <field name="model">mail.activity</field>
+        <field name="arch" type="xml">
+            <search string="Activity">
+                <field name="summary"/>
+                <field name="res_name" string="Document"/>
+                <field name="user_id" filter_domain="['|', ('user_id', '=', self), ('assigned_user_ids', 'in', [self])]"/>
+                <field name="supervisor_id"/>
+                <field name="activity_type_id"/>
+                <field name="tag_ids"/>
+                <separator/>
+                <filter name="my_activity" string="My Activity" domain="['|', ('user_id', '=', uid), ('assigned_user_ids', 'in', [uid])]"/>
+                <filter name="my_team" string="My Team" domain="[('supervisor_id', '=', uid)]"/>
+                <separator/>
+                <filter name="overdue" string="Overdue" domain="[('management_state', '=', 'overdue')]"/>
+                <filter name="today" string="Today" domain="[('management_state', '=', 'today')]"/>
+                <filter name="planned" string="Planned" domain="[('management_state', '=', 'planned')]"/>
+                <separator/>
+                <filter name="high_priority" string="High Priority" domain="[('priority', '=', '3')]"/>
+                <separator/>
+                <filter name="done" string="Done" domain="[('active', '=', False), ('cancelled_date', '=', False)]"/>
+                <filter name="cancelled" string="Cancelled" domain="[('active', '=', False), ('cancelled_date', '!=', False)]"/>
+                <separator/>
+                <filter name="group_user" string="User" context="{'group_by': 'user_id'}"/>
+                <filter name="group_supervisor" string="Supervisor" context="{'group_by': 'supervisor_id'}"/>
+                <filter name="group_type" string="Activity Type" context="{'group_by': 'activity_type_id'}"/>
+                <filter name="group_model" string="Document Model" context="{'group_by': 'res_model'}"/>
+                <filter name="group_deadline" string="Deadline" context="{'group_by': 'date_deadline:day'}"/>
+                <filter name="group_status" string="Completion Status" context="{'group_by': 'closure_status'}"/>
+            </search>
+        </field>
+    </record>
+    <!-- =====================================================
+         MAIN ACTIVITY ACTION
+    ====================================================== -->
+    <record id="mail_activity_action" model="ir.actions.act_window">
+        <field name="name">Activity</field>
+        <field name="res_model">mail.activity</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="mail_activity_view_search"/>
+        <field name="context">{'active_test': False}</field>
+    </record>
+    <record id="mail_activity_action_list" model="ir.actions.act_window.view">
+        <field name="sequence" eval="1"/>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="mail_activity_view_list"/>
+        <field name="act_window_id" ref="mail_activity_action"/>
+    </record>
+    <record id="mail_activity_action_form" model="ir.actions.act_window.view">
+        <field name="sequence" eval="2"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="mail_activity_view_form"/>
+        <field name="act_window_id" ref="mail_activity_action"/>
+    </record>
+    <!-- =====================================================
+         MY ACTIVITY ACTION
+    ====================================================== -->
+    <record id="mail_activity_action_my" model="ir.actions.act_window">
+        <field name="name">My Activity</field>
+        <field name="res_model">mail.activity</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">['|', ('user_id', '=', uid), ('assigned_user_ids', 'in', [uid])]</field>
+        <field name="search_view_id" ref="mail_activity_view_search"/>
+        <field name="context">{'active_test': False}</field>
+    </record>
+    <record id="mail_activity_action_my_list" model="ir.actions.act_window.view">
+        <field name="sequence" eval="1"/>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="mail_activity_view_list"/>
+        <field name="act_window_id" ref="mail_activity_action_my"/>
+    </record>
+    <record id="mail_activity_action_my_form" model="ir.actions.act_window.view">
+        <field name="sequence" eval="2"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="mail_activity_view_form"/>
+        <field name="act_window_id" ref="mail_activity_action_my"/>
+    </record>
+    <!-- =====================================================
+         TEAM ACTIVITY ACTION
+    ====================================================== -->
+    <record id="mail_activity_action_team" model="ir.actions.act_window">
+        <field name="name">Team Activity</field>
+        <field name="res_model">mail.activity</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">['|', '|', ('user_id', '=', uid), ('assigned_user_ids', 'in', [uid]), ('supervisor_id', '=', uid)]</field>
+        <field name="search_view_id" ref="mail_activity_view_search"/>
+        <field name="context">{'active_test': False}</field>
+    </record>
+    <record id="mail_activity_action_team_list" model="ir.actions.act_window.view">
+        <field name="sequence" eval="1"/>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="mail_activity_view_list"/>
+        <field name="act_window_id" ref="mail_activity_action_team"/>
+    </record>
+    <record id="mail_activity_action_team_form" model="ir.actions.act_window.view">
+        <field name="sequence" eval="2"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="mail_activity_view_form"/>
+        <field name="act_window_id" ref="mail_activity_action_team"/>
+    </record>
+    <!-- =====================================================
+         EXTEND STANDARD ODOO ACTIVITY POPUP
+         Preserve the original Odoo popup and add custom fields.
+    ====================================================== -->
+    <record id="mail_activity_view_form_popup_inherit" model="ir.ui.view">
+        <field name="name">
+            mail.activity.view.form.popup.inherit.kz
+        </field>
+        <field name="model">mail.activity</field>
+        <field name="inherit_id" ref="mail.mail_activity_view_form_popup"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='user_id']" position="after">
+                <field name="active" invisible="1"/>
+                <field name="company_id" invisible="1"/>
+                <group string="Additional Details" groups="kz_activity_management.group_activity_employee">
+                    <field name="priority" widget="priority" readonly="not active"/>
+                    <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}" readonly="not active" domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]"/>
+                    <field name="assignment_type" readonly="not active"/>
+                    <field name="assigned_user_ids" widget="many2many_tags" readonly="not active" options="{'no_create': True}"/>
+                    <field name="supervisor_id" readonly="not active"/>
+                    <field name="estimated_hours" widget="float_time" readonly="not active"/>
+                    <field name="alarm_datetime" readonly="not active"/>
+                    <field name="is_recurring" readonly="not active"/>
+                    <field name="recurrence_interval" invisible="not is_recurring" readonly="not active"/>
+                    <field name="recurrence_unit" required="is_recurring" invisible="not is_recurring" readonly="not active"/>
+                    <field name="recurrence_end_date" invisible="not is_recurring" readonly="not active"/>
+                </group>
+            </xpath>
+            <xpath expr="//field[@name='summary']" position="attributes">
+                <attribute name="readonly">not active</attribute>
+            </xpath>
+            <xpath expr="//field[@name='activity_type_id']" position="attributes">
+                <attribute name="readonly">not active</attribute>
+            </xpath>
+            <xpath expr="//field[@name='user_id']" position="attributes">
+                <attribute name="readonly">not active</attribute>
+            </xpath>
+            <xpath expr="//field[@name='date_deadline']" position="attributes">
+                <attribute name="readonly">not active</attribute>
+            </xpath>
+            <xpath expr="//field[@name='note']" position="attributes">
+                <attribute name="readonly">not active</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,12 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_activity_tag_employee,activity.tag employee,model_activity_tag,group_activity_employee,1,0,0,0
+access_activity_tag_supervisor,activity.tag supervisor,model_activity_tag,group_activity_supervisor,1,0,0,0
+access_activity_tag_manager,activity.tag manager,model_activity_tag,group_activity_manager,1,1,1,1
+access_activity_timer_employee,activity.timer employee,model_activity_timer,group_activity_employee,1,1,1,0
+access_activity_timer_supervisor,activity.timer supervisor,model_activity_timer,group_activity_supervisor,1,1,1,0
+access_activity_timer_manager,activity.timer manager,model_activity_timer,group_activity_manager,1,1,1,1
+access_activity_cancel_wizard_employee,activity.cancel.wizard employee,model_activity_cancel_wizard,group_activity_employee,1,1,1,1
+access_activity_feedback_wizard_employee,activity.feedback.wizard employee,model_activity_feedback_wizard,group_activity_employee,1,1,1,1
+access_activity_mass_wizard_employee,activity.mass.wizard employee,model_activity_mass_wizard,group_activity_employee,1,1,1,1
+access_activity_history_employee,activity.history employee,model_activity_history,group_activity_employee,1,0,0,0
+access_activity_bulk_close_wizard_employee,activity.bulk.close.wizard employee,model_activity_bulk_close_wizard,group_activity_employee,1,1,1,1

@@ -1,0 +1,63 @@
+<templates xml:space="preserve">
+    <t t-name="kz_activity_management.ActivityInfo" t-inherit="mail.Activity" t-inherit-mode="extension">
+        <xpath expr="//table[contains(@class, 'o-mail-Activity-details')]/tbody" position="inside">
+            <t t-if="props.activity.management_details" t-set="details" t-value="props.activity.management_details"/>
+            <t t-if="props.activity.management_details">
+                <tr>
+                    <td class="text-end fw-bolder">Priority</td>
+                    <td t-esc="details.priority"/>
+                </tr>
+                <tr t-if="details.supervisor">
+                    <td class="text-end fw-bolder">Supervisor</td>
+                    <td t-esc="details.supervisor"/>
+                </tr>
+                <tr t-if="details.people">
+                    <td class="text-end fw-bolder">Additional People</td>
+                    <td t-esc="details.people"/>
+                </tr>
+                <tr t-if="details.tags">
+                    <td class="text-end fw-bolder">Tags</td>
+                    <td t-esc="details.tags"/>
+                </tr>
+                <tr>
+                    <td class="text-end fw-bolder">Assignment</td>
+                    <td t-esc="details.assignment"/>
+                </tr>
+                <tr>
+                    <td class="text-end fw-bolder">Estimated</td>
+                    <td t-esc="details.estimate"/>
+                </tr>
+                <tr>
+                    <td class="text-end fw-bolder">Time Spent</td>
+                    <td t-esc="details.spent"/>
+                </tr>
+                <tr>
+                    <td class="text-end fw-bolder">Remaining</td>
+                    <td t-esc="details.remaining"/>
+                </tr>
+                <tr t-if="details.alarm">
+                    <td class="text-end fw-bolder">Reminder</td>
+                    <td t-esc="details.alarm"/>
+                </tr>
+                <tr t-if="details.recurrence">
+                    <td class="text-end fw-bolder">Recurrence</td>
+                    <td>
+                        <t t-esc="details.recurrence"/>
+                        <span t-if="details.until"> · Until <t t-esc="details.until"/>
+                        </span>
+                    </td>
+                </tr>
+            </t>
+        </xpath>
+        <xpath expr="//t[@name='tools']" position="inside">
+            <t t-if="props.activity.management_details and props.activity.active">
+                <button t-if="!props.activity.is_timer_running" class="btn btn-link p-0 ms-3" t-on-click="() =&gt; this.managementTimer('action_start_timer')" t-att-disabled="managementState.pending">
+                    <i class="fa fa-play me-1" aria-hidden="true"/>Start Timer</button>
+                <button t-else="" class="btn btn-link text-danger p-0 ms-3" t-on-click="() =&gt; this.managementTimer('action_stop_timer')" t-att-disabled="managementState.pending">
+                    <i class="fa fa-stop me-1" aria-hidden="true"/>Stop Timer</button>
+                <button class="btn btn-link p-0 ms-3" t-on-click="managementShare" title="Open WhatsApp with a message to review and send">
+                    <i class="fa fa-whatsapp me-1" aria-hidden="true"/>Share</button>
+            </t>
+        </xpath>
+    </t>
+</templates>

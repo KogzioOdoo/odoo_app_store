@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<odoo>
+    <record id="activity_new_action" model="ir.actions.act_window">
+        <field name="name">Schedule Activity</field>
+        <field name="res_model">mail.activity.schedule</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+    <menuitem id="menu_activity_root" name="Activity Management" web_icon="kz_activity_management,static/description/icon.png" groups="group_activity_employee" sequence="5"/>
+    <menuitem id="menu_activity_dashboard" name="Dashboard" parent="menu_activity_root" action="activity_dashboard_action" groups="group_activity_employee" sequence="2"/>
+    <menuitem id="menu_activity" name="Activities" parent="menu_activity_root" sequence="3"/>
+    <menuitem id="menu_activity_my" name="My Activities" parent="menu_activity" action="mail_activity_action_my" groups="group_activity_employee" sequence="1"/>
+    <menuitem id="menu_activity_team" name="Team Activities" parent="menu_activity" action="mail_activity_action_team" groups="group_activity_supervisor" sequence="2"/>
+    <menuitem id="menu_activity_list" name="All Activities" parent="menu_activity" action="mail_activity_action" groups="group_activity_manager" sequence="3"/>
+    <menuitem id="menu_activity_report" name="Reporting" parent="menu_activity_root" action="mail_activity_action_report" groups="group_activity_supervisor" sequence="4"/>
+    <menuitem id="menu_activity_config" name="Configuration" parent="menu_activity_root" groups="group_activity_manager" sequence="5"/>
+    <menuitem id="menu_activity_tags" name="Activity Tags" parent="menu_activity_config" action="activity_tag_action" sequence="1"/>
+    <menuitem id="menu_activity_settings" name="Settings" parent="menu_activity_config" action="res_config_settings_action_activity" groups="base.group_system" sequence="99"/>
+</odoo>

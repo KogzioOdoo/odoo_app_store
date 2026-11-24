@@ -1,0 +1,413 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="kz_activity_management.ActivityDashboard">
+
+        <div class="o_action o_dashboard o_kz_dashboard p-3">
+
+            <!-- ACTIVITY FILTERS -->
+            <div class="o_filters d-flex flex-nowrap align-items-center gap-2 mb-3"
+                 aria-label="Activity filters">
+
+                <!-- Activity Type -->
+                <div class="activity-filter">
+                    <select class="form-select"
+                            aria-label="Activity Type"
+                            title="Activity Type"
+                            t-on-change="(ev) => this.onFilterChange('activity_type_id', ev)"
+                            t-att-value="state.filters.activity_type_id">
+
+                        <option value="">Activity Type</option>
+
+                        <t t-foreach="state.data.options.activity_types or []"
+                           t-as="type"
+                           t-key="type.id">
+                            <option t-att-value="type.id"
+                                    t-att-selected="state.filters.activity_type_id == type.id"
+                                    t-esc="type.name"/>
+                        </t>
+                    </select>
+                </div>
+
+                <!-- Assigned Person -->
+                <div class="activity-filter">
+                    <select class="form-select"
+                            aria-label="Assigned Person"
+                            title="Assigned Person"
+                            t-on-change="(ev) => this.onFilterChange('user_id', ev)"
+                            t-att-value="state.filters.user_id">
+
+                        <option value="">Assigned Person</option>
+
+                        <t t-foreach="dropdownOptions.users"
+                           t-as="user"
+                           t-key="user.id">
+                            <option t-att-value="user.id"
+                                    t-att-selected="state.filters.user_id == user.id"
+                                    t-esc="user.name"/>
+                        </t>
+                    </select>
+                </div>
+
+                <!-- Supervisor -->
+                <div class="activity-filter">
+                    <select class="form-select"
+                            aria-label="Supervisor"
+                            title="Supervisor"
+                            t-on-change="(ev) => this.onFilterChange('supervisor_id', ev)"
+                            t-att-value="state.filters.supervisor_id">
+
+                        <option value="">Supervisor</option>
+
+                        <t t-foreach="dropdownOptions.supervisors"
+                           t-as="user"
+                           t-key="user.id">
+                            <option t-att-value="user.id"
+                                    t-att-selected="state.filters.supervisor_id == user.id"
+                                    t-esc="user.name"/>
+                        </t>
+                    </select>
+                </div>
+
+                <!-- Customer -->
+                <div class="activity-filter">
+                    <select class="form-select"
+                            aria-label="Customer"
+                            title="Customer"
+                            t-on-change="(ev) => this.onFilterChange('customer_id', ev)"
+                            t-att-value="state.filters.customer_id">
+
+                        <option value="">Customer</option>
+
+                        <t t-foreach="dropdownOptions.customers"
+                           t-as="customer"
+                           t-key="customer.id">
+                            <option t-att-value="customer.id"
+                                    t-att-selected="state.filters.customer_id == customer.id"
+                                    t-esc="customer.name"/>
+                        </t>
+                    </select>
+                </div>
+
+                <!-- Priority -->
+                <div class="activity-filter">
+                    <select class="form-select"
+                            aria-label="Priority"
+                            title="Priority"
+                            id="priority_filter"
+                            t-on-change="(ev) => this.onFilterChange('priority', ev)"
+                            t-att-value="state.filters.priority">
+
+                        <option value="">All Priorities</option>
+
+                        <t t-foreach="state.data.options.priorities or []"
+                           t-as="priority"
+                           t-key="priority[0]">
+                            <option t-att-value="priority[0]"
+                                    t-att-selected="state.filters.priority === priority[0]"
+                                    t-esc="priority[1]"/>
+                        </t>
+                    </select>
+                </div>
+
+                <!-- Document Type -->
+                <div class="activity-filter">
+                    <select class="form-select"
+                            aria-label="Document Type"
+                            title="Document Type"
+                            id="document_model_filter"
+                            t-on-change="(ev) => this.onFilterChange('res_model', ev)"
+                            t-att-value="state.filters.res_model">
+
+                        <option value="">Document Type</option>
+
+                        <t t-foreach="state.data.options.models or []"
+                           t-as="model"
+                           t-key="model.model">
+                            <option t-att-value="model.model"
+                                    t-att-selected="state.filters.res_model === model.model"
+                                    t-esc="model.name"/>
+                        </t>
+                    </select>
+                </div>
+
+                <!-- Deadline Filters -->
+                <div class="activity-filter activity-date-filter">
+                    <div class="o_date_filters d-flex flex-column gap-1">
+
+                        <input id="deadline_from"
+                               aria-label="Deadline From"
+                               title="Deadline From"
+                               type="text"
+                               class="form-control"
+                               placeholder="Deadline from"
+                               onfocus="this.type='date'"
+                               onblur="if (!this.value) this.type='text'"
+                               t-att-value="state.filters.date_from"
+                               t-on-change="(ev) => this.onFilterChange('date_from', ev)"/>
+
+                        <input id="deadline_to"
+                               aria-label="Deadline To"
+                               title="Deadline To"
+                               type="text"
+                               class="form-control"
+                               placeholder="Deadline to"
+                               onfocus="this.type='date'"
+                               onblur="if (!this.value) this.type='text'"
+                               t-att-value="state.filters.date_to"
+                               t-on-change="(ev) => this.onFilterChange('date_to', ev)"/>
+
+                    </div>
+                </div>
+
+                <!-- Clear Filters -->
+                <button t-if="hasActiveFilters"
+                        type="button"
+                        class="btn btn-outline-secondary o_clear_filter"
+                        t-on-click="onClearFilters">
+                    Clear Filters
+                </button>
+
+            </div>
+
+            <!-- DASHBOARD STATUS CARDS -->
+            <div class="o_cards d-flex flex-wrap gap-3 mb-4"
+                 aria-label="Activity status filters">
+
+                <t t-foreach="cards"
+                   t-as="card"
+                   t-key="card.key">
+
+                    <button type="button"
+                            t-attf-class="o_card text-start #{card.css} #{state.activeCard === card.key ? 'o_card_active' : ''}"
+                            t-att-aria-pressed="state.activeCard === card.key ? 'true' : 'false'"
+                            t-on-click="() => this.onSelectCard(card)">
+
+                        <span class="o_card_label d-block"
+                              t-esc="card.label"/>
+
+                        <span class="o_card_count d-block"
+                              t-esc="state.data.counts[card.key] || 0"/>
+
+                    </button>
+
+                </t>
+            </div>
+
+            <!-- ERROR MESSAGE -->
+            <div t-if="state.error"
+                 class="alert alert-danger"
+                 role="alert">
+
+                <span t-esc="state.error"/>
+
+                <button type="button"
+                        class="btn btn-outline-danger ms-3"
+                        t-on-click="loadData">
+                    Retry
+                </button>
+            </div>
+
+            <!-- TABLE HEADER AND PAGINATION -->
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+
+                <h2 class="h5 m-0"
+                    t-esc="activeCardLabel"/>
+
+                <div class="d-flex flex-wrap align-items-center gap-2">
+
+                    <button type="button"
+                            class="btn btn-primary"
+                            t-on-click="onNewActivity">
+                        New Activity
+                    </button>
+
+                    <button type="button"
+                            class="btn btn-link"
+                            t-on-click="onOpenFullList"
+                            t-att-disabled="state.loading || !!state.error">
+                        Open in List View
+                    </button>
+
+                    <span class="text-muted">
+                        <t t-esc="pagerStart"/>–<t t-esc="pagerEnd"/>
+                        /
+                        <t t-esc="state.table.total"/>
+                    </span>
+
+                    <button type="button"
+                            class="btn btn-outline-secondary"
+                            aria-label="Previous page"
+                            title="Previous page"
+                            t-att-disabled="state.loading || !hasPrev"
+                            t-on-click="onPrevPage">
+                        <i class="fa fa-chevron-left"
+                           aria-hidden="true"/>
+                    </button>
+
+                    <button type="button"
+                            class="btn btn-outline-secondary"
+                            aria-label="Next page"
+                            title="Next page"
+                            t-att-disabled="state.loading || !hasNext"
+                            t-on-click="onNextPage">
+                        <i class="fa fa-chevron-right"
+                           aria-hidden="true"/>
+                    </button>
+
+                </div>
+            </div>
+
+            <!-- LOADING -->
+            <div t-if="state.loading"
+                 role="status"
+                 class="py-4 text-center text-muted">
+
+                <i class="fa fa-spinner fa-spin me-2"
+                   aria-hidden="true"/>
+                Loading activities…
+            </div>
+
+            <!-- ACTIVITY LIST (CSS grid — keeps headers and rows aligned) -->
+            <div t-elif="!state.error"
+                 class="o_kz_table_container">
+
+                <div class="o_activity_list"
+                     role="table"
+                     aria-label="Activities">
+
+                    <div class="o_activity_list_head"
+                         role="row">
+                        <div role="columnheader">Document</div>
+                        <div role="columnheader">Type</div>
+                        <div role="columnheader">Summary</div>
+                        <div role="columnheader">Responsible</div>
+                        <div role="columnheader">Deadline</div>
+                        <div role="columnheader">Priority</div>
+                        <div role="columnheader">Status</div>
+                        <div role="columnheader"
+                             class="o_activity_list_actions_head">Actions</div>
+                    </div>
+
+                    <div t-if="!state.table.records.length"
+                         class="o_activity_list_empty">
+
+                        <h3 t-if="hasActiveFilters"
+                            class="h5">
+                            No matching activities
+                        </h3>
+
+                        <h3 t-elif="state.activeCard === 'all'"
+                            class="h5">
+                            No activities assigned in this scope
+                        </h3>
+
+                        <h3 t-else=""
+                            class="h5">
+                            No activities with this status
+                        </h3>
+
+                        <p t-if="hasActiveFilters"
+                           class="text-muted mb-0">
+                            Adjust the filters above or select another activity status.
+                        </p>
+
+                        <p t-elif="state.activeCard !== 'all'"
+                           class="text-muted mb-0">
+                            Select another status card to view available activities.
+                        </p>
+
+                        <p t-else=""
+                           class="text-muted mb-0">
+                            Use New Activity above to schedule your first activity.
+                        </p>
+                    </div>
+
+                    <t t-foreach="state.table.records"
+                       t-as="record"
+                       t-key="record.id">
+
+                        <div class="o_activity_list_row"
+                             role="row">
+
+                            <div role="cell"
+                                 class="o_cell_text"
+                                 t-att-title="record.document"
+                                 t-esc="record.document"/>
+
+                            <div role="cell"
+                                 class="o_cell_text"
+                                 t-att-title="record.activity_type"
+                                 t-esc="record.activity_type"/>
+
+                            <div role="cell"
+                                 class="o_cell_text"
+                                 t-att-title="record.summary"
+                                 t-esc="record.summary"/>
+
+                            <div role="cell"
+                                 class="o_cell_text"
+                                 t-att-title="record.user"
+                                 t-esc="record.user"/>
+
+                            <div role="cell"
+                                 class="o_cell_text"
+                                 t-esc="record.deadline_label"/>
+
+                            <div role="cell"
+                                 class="o_cell_text"
+                                 t-esc="getStars(record.priority)"/>
+
+                            <div role="cell">
+                                <span t-attf-class="badge #{statuses[record.status]?.css || 'text-bg-secondary'}"
+                                      t-esc="statuses[record.status]?.label || record.status"/>
+                            </div>
+
+                            <div role="cell"
+                                 class="o_activity_list_actions">
+                                <div class="o_row_actions">
+
+                                    <button t-if="record.active"
+                                            type="button"
+                                            class="btn btn-sm btn-outline-success"
+                                            title="Complete with feedback"
+                                            t-on-click="() => this.onRowDone(record)"
+                                            t-att-disabled="state.rowPending">
+                                        Done
+                                    </button>
+
+                                    <button t-if="record.active"
+                                            type="button"
+                                            class="btn btn-sm btn-outline-danger"
+                                            title="Cancel with a reason"
+                                            t-on-click="() => this.onRowCancel(record)"
+                                            t-att-disabled="state.rowPending">
+                                        Cancel
+                                    </button>
+
+                                    <button type="button"
+                                            class="btn btn-sm btn-outline-secondary"
+                                            t-on-click="() => this.onRowView(record)">
+                                        <t t-if="record.active">View / Edit</t>
+                                        <t t-else="">View</t>
+                                    </button>
+
+                                    <button t-if="record.res_model and record.res_id"
+                                            type="button"
+                                            class="btn btn-sm btn-outline-secondary"
+                                            title="Open the source document if permitted"
+                                            t-on-click="() => this.onRowOrigin(record)">
+                                        Origin
+                                    </button>
+
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+            </div>
+
+        </div>
+    </t>
+
+</templates>
